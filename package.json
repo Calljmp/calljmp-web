@@ -1,0 +1,56 @@
+{
+  "name": "@calljmp/web",
+  "version": "0.0.1",
+  "description": "Calljmp SDK for TypeScript/JavaScript",
+  "keywords": [
+    "calljmp",
+    "typescript",
+    "react",
+    "nextjs",
+    "ai",
+    "agents",
+    "workflows"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Calljmp/calljmp-web.git"
+  },
+  "author": "Calljmp <info@calljmp.com> (https://calljmp.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Calljmp/calljmp-web/issues"
+  },
+  "homepage": "https://calljmp.com",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.esm.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.esm.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.esm.d.ts",
+      "import": "./dist/react/index.esm.js",
+      "require": "./dist/react/index.cjs.js",
+      "default": "./dist/react/index.cjs.js"
+    },
+    "./package.json": "./dist/package.json"
+  },
+  "devDependencies": {
+    "@nx/rollup": "20.4.0",
+    "@tsconfig/node-lts": "^22.0.2",
+    "rollup": "^4.14.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}

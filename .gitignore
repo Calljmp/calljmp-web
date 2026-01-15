@@ -1,0 +1,9 @@
+src/lib/common
+
+# compiled output
+dist
+tmp
+out-tsc
+build
+
+node_modules

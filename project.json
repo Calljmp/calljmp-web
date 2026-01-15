@@ -1,0 +1,134 @@
+{
+  "name": "sdk-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/sdk-web/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": [],
+  "targets": {
+    "common:sync": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": ".",
+        "commands": [
+          "rm -rf ./libs/sdk-web/src/lib/common && mkdir -p ./libs/sdk-web/src/lib/common && cp -r ./libs/common/src/* ./libs/sdk-web/src/lib/common/"
+        ]
+      }
+    },
+    "bundle:core": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "dependsOn": [
+        "sdk-web:common:sync"
+      ],
+      "options": {
+        "outputPath": "libs/sdk-web/dist",
+        "tsConfig": "libs/sdk-web/tsconfig.lib.json",
+        "project": "libs/sdk-web/package.json",
+        "entryFile": "libs/sdk-web/src/index.ts",
+        "format": [
+          "esm",
+          "cjs"
+        ],
+        "rollupConfig": "libs/sdk-web/rollup.config.cjs",
+        "assets": [
+          {
+            "glob": "libs/sdk-web/package.json",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/sdk-web/README.md",
+            "input": ".",
+            "output": "."
+          },
+          {
+            "glob": "libs/sdk-web/LICENSE",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "bundle:react": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "dependsOn": [
+        "sdk-web:common:sync",
+        "bundle:core"
+      ],
+      "options": {
+        "outputPath": "libs/sdk-web/dist/react",
+        "tsConfig": "libs/sdk-web/tsconfig.lib.json",
+        "project": "libs/sdk-web/package.json",
+        "entryFile": "libs/sdk-web/src/react/index.ts",
+        "format": [
+          "esm",
+          "cjs"
+        ],
+        "rollupConfig": "libs/sdk-web/rollup.react.config.cjs"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "sdk-web:common:sync"
+      ],
+      "options": {
+        "cwd": "libs/sdk-web",
+        "commands": [
+          "tsc -p tsconfig.lib.json --noEmit"
+        ]
+      }
+    },
+    "publish:git": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "sdk-web:common:sync",
+        "typecheck"
+      ],
+      "options": {
+        "cwd": "libs/sdk-web",
+        "commands": [
+          "./tools/git-publish.sh"
+        ]
+      }
+    },
+    "publish:npm": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build"
+      ],
+      "options": {
+        "cwd": "libs/sdk-web/dist",
+        "commands": [
+          "npm publish --access public"
+        ]
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "bundle:core",
+        "bundle:react"
+      ],
+      "options": {
+        "cwd": "libs/sdk-web/dist",
+        "commands": [
+          "../tools/package.sh"
+        ]
+      }
+    }
+  }
+}
